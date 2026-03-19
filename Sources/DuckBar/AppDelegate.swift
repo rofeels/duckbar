@@ -136,8 +136,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let keyCode {
             settings.hotkeyCode = keyCode
-            settings.hotkeyModifiers = modifiers.intersection(.deviceIndependentFlagsMask)
-                .subtracting(.function).rawValue
+            settings.hotkeyModifiers = modifiers.intersection(.deviceIndependentFlagsMask).rawValue
         }
         setupHotkey()
         NotificationCenter.default.post(name: .init("HotkeyRecorded"), object: nil)
