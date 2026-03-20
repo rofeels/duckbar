@@ -8,7 +8,7 @@
             <sparkle:version>2</sparkle:version>
             <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/rofeels/duckbar/releases/download/v0.2.0/DuckBar-0.2.0.zip" length="3397815" type="application/octet-stream" sparkle:edSignature="+YzXJOUYukeD3zCdz0PKWQYB4QN08W7HhkeXn3ZPFQDItejECmFLnpOEJg1wWvt9tdjXKyvQHty2b+XG4mVKBg=="/>
+            <enclosure url="https://github.com/rofeels/duckbar/releases/download/v0.2.0/DuckBar-0.2.0.zip" length="1523108" type="application/octet-stream" sparkle:edSignature="KRle41xOOebbj1rYVDh6k7GbCz/WCvpkKxgR4fSyvNMSZYFUr/i8AKKDBY6HUSD6h6iS90CNuHK/oM8eApeXCg=="/>
         </item>
         <item>
             <title>0.1.0</title>
