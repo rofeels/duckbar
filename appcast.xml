@@ -3,6 +3,14 @@
     <channel>
         <title>DuckBar</title>
         <item>
+            <title>0.2.1</title>
+            <pubDate>Thu, 20 Mar 2026 14:00:00 +0900</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>0.2.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/rofeels/duckbar/releases/download/v0.2.1/DuckBar-0.2.1.zip" length="1897025" type="application/octet-stream" sparkle:edSignature="CQ+y4MpsIkiCpIuAQfGLCqiql29cdAMoUrnCN/r3tzVgkDEDPzsJqvpwaxFRXoY4kE6pLD5cajJEX8XtIYrbCQ=="/>
+        </item>
+        <item>
             <title>0.2.0</title>
             <pubDate>Thu, 20 Mar 2026 10:00:00 +0900</pubDate>
             <sparkle:version>2</sparkle:version>
