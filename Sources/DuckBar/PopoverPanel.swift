@@ -2,13 +2,19 @@ import AppKit
 import SwiftUI
 
 /// 시스템 기본 NSPopover를 래핑
-final class PopoverManager {
+final class PopoverManager: NSObject, NSPopoverDelegate {
 
     let popover = NSPopover()
 
-    init() {
+    override init() {
+        super.init()
         popover.behavior = .transient
         popover.animates = true
+        popover.delegate = self
+    }
+
+    func popoverDidShow(_ notification: Notification) {
+        popover.contentViewController?.view.window?.makeKey()
     }
 
     /// SwiftUI 뷰를 콘텐츠로 설정
