@@ -3,6 +3,20 @@
     <channel>
         <title>DuckBar</title>
         <item>
+            <title>0.4.0</title>
+            <pubDate>Fri, 27 Mar 2026 23:17:23 +0900</pubDate>
+            <sparkle:version>5</sparkle:version>
+            <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://rofeels.github.io/duckbar/DuckBar-0.4.0.zip" length="2797208" type="application/octet-stream" sparkle:edSignature="mTPPwKpn213zCUsU+UkEI2m2LUjJQtNBZexQEPH6UNRtRRkrMSi0lPgjoB0svCxuQ85bgCDCZGYmmtc14i0kAg=="/>
+            <sparkle:deltas>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar5-4.delta" sparkle:deltaFrom="4" length="828378" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="8DzvJA4maKsDzc6ms/6UqaIK0NBK+pSO+nR8tu6tc7HWIdMTaj2jOBnZlZNduMNbUqpfdNexIvPkKidJcih8Bg=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar5-3.delta" sparkle:deltaFrom="3" length="974806" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="PbvnzlVrXJ07zoAYuSX+XEyiUwfj31DdCe6OUGoUJeXjxY7OiOnWqfJrY4sYcyU5tHvKw/cUQKN1IwmGsinODA=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar5-2.delta" sparkle:deltaFrom="2" length="1046154" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="4MfYXw7efjIdB4q6ZxQsvybn5wLjwfvQWkLCZZhz8z9/rq5itWao5A41PDlXgOnou78BKLxqPgG2mP0MmJZKCg=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar5-1.delta" sparkle:deltaFrom="1" length="1093362" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="zT1DLe1U48YkW3DYywA1r+UqIoFtPAT5H1q+26Mge4l8Q528xECZ5vuc0Q9XRMGLxrFH290xWSLU7SvpbFLkBQ=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>0.3.0</title>
             <pubDate>Sat, 21 Mar 2026 23:45:21 +0900</pubDate>
             <sparkle:version>4</sparkle:version>
