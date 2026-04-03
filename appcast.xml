@@ -3,6 +3,21 @@
     <channel>
         <title>DuckBar</title>
         <item>
+            <title>0.4.1</title>
+            <pubDate>Fri, 03 Apr 2026 10:33:15 +0900</pubDate>
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>0.4.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://rofeels.github.io/duckbar/DuckBar-0.4.1.zip" length="2815927" type="application/octet-stream" sparkle:edSignature="eun8SuFTCF2ozvPdtw4elBrRi3f7mpbmYFGVCjpdZnk4W6kjH2Xc6yTseWJ46+2jUf/js3jW2jGT5p2O1avLCg=="/>
+            <sparkle:deltas>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar6-5.delta" sparkle:deltaFrom="5" length="264642" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="Q7iIOHlyZufpFcq9s35f8vBlauNfjfS8IO2y3NFa0GyLlHrMd3eyYDfBVyAZ52I9sHaeHCZRZf2g79tvudzSDQ=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar6-4.delta" sparkle:deltaFrom="4" length="855654" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="dd9b/YHIE2gIk719cr3zL2oBJf0Dxy+Hgd9xKVFYm9zqjnLa0A3iEBXuT/SzrTSZw2TNddEFirzSL5Ga4erRDg=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar6-3.delta" sparkle:deltaFrom="3" length="1000294" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="nAu6dJwwgPoizlKtwjOe0SE0jscKU/J8sjQTl/oV42UDskFnkz+reCPpD6hzE0tHh+fV5fnjMD6QEZuCKu6QBw=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar6-2.delta" sparkle:deltaFrom="2" length="1066102" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="lkuwA9q8ufxqgYDoZQ9Nkm/w6lpVmlFw1osXgycb89gwwj2I1fKxSOgZpAnPSFcVW0oLZHSziF6q6NNS1kb7Cw=="/>
+                <enclosure url="https://rofeels.github.io/duckbar/DuckBar6-1.delta" sparkle:deltaFrom="1" length="1114966" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="dznr7o4Erg/Yzpvzs5P2lNHq+1G1CcJS4COdfQXd7OrY+Z+3JIurAaPBIgtU67ihkKh2UK7yz/Takjkij4EqBw=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>0.4.0</title>
             <pubDate>Fri, 27 Mar 2026 23:17:23 +0900</pubDate>
             <sparkle:version>5</sparkle:version>
@@ -27,18 +42,6 @@
                 <enclosure url="https://rofeels.github.io/duckbar/DuckBar4-3.delta" sparkle:deltaFrom="3" length="412422" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="O/x9ukMMpAvktVEWg4VTaOP6CzXBgr7RGIM01jtiyUEIci/et3Q7zsOCUxX8OySK5Ph0XDu08E/BQ4xn8JtSAg=="/>
                 <enclosure url="https://rofeels.github.io/duckbar/DuckBar4-2.delta" sparkle:deltaFrom="2" length="520590" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="R/fH0AIeGWqo925zXo3cHhdrmyxmgg9Vu4pafOcfo3iSFxn0g5rlXfudHAhrGIFedkdZ7fDETyTtfFKkr35ODQ=="/>
                 <enclosure url="https://rofeels.github.io/duckbar/DuckBar4-1.delta" sparkle:deltaFrom="1" length="576086" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="/sBauEyXxVBt0mIGEyVd1kZA221mNt+5yPiWzrrj30RzwDAS9c6rF+2DGoRmRSxRJ7FmEGFP1Gf3sOIcJ+ZHDw=="/>
-            </sparkle:deltas>
-        </item>
-        <item>
-            <title>0.2.1</title>
-            <pubDate>Fri, 20 Mar 2026 13:39:50 +0900</pubDate>
-            <sparkle:version>3</sparkle:version>
-            <sparkle:shortVersionString>0.2.1</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://rofeels.github.io/duckbar/DuckBar-0.2.1.zip" length="1897025" type="application/octet-stream" sparkle:edSignature="CQ+y4MpsIkiCpIuAQfGLCqiql29cdAMoUrnCN/r3tzVgkDEDPzsJqvpwaxFRXoY4kE6pLD5cajJEX8XtIYrbCQ=="/>
-            <sparkle:deltas>
-                <enclosure url="https://rofeels.github.io/duckbar/DuckBar3-2.delta" sparkle:deltaFrom="2" length="278402" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="b0hfT/JJ9ys/0w3o4ewX2uJ++j9Z1R2GloLOckoyKWWGQMqmhNd51ppeZsD6lmc2B5S2JWosJPz5zLLkwG+eCw=="/>
-                <enclosure url="https://rofeels.github.io/duckbar/DuckBar3-1.delta" sparkle:deltaFrom="1" length="362214" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977616" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="BARM3QWKVZrbHdnuKSy3cs6X4aE1RCatSaSEuPKIaBn6mMZ7doNcscM3IKMo4mKD2jP4oPTKN/THH0rkK0WeCw=="/>
             </sparkle:deltas>
         </item>
         <item>
