@@ -1,6 +1,6 @@
 cask "duckbar" do
-  version "0.4.3"
-  sha256 "906ff29767c465586452d7407295f4b2010b1340c0e9c5e00a50e96ba6361227"
+  version "0.4.4"
+  sha256 "9f5e268c72a8c88055b9b84704d63893c809ffa7213aa6731df0accd497c04b5"
 
   url "https://github.com/rofeels/duckbar/releases/download/v#{version}/DuckBar-#{version}.zip"
   name "DuckBar"
