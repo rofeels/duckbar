@@ -208,7 +208,8 @@ struct StatusMenuView: View {
                     .frame(width: 20 * s, alignment: .trailing)
                 ProgressBarView(
                     value: rl.isLoaded ? rl.fiveHourPercent / 100 : 0,
-                    color: rl.isLoaded ? progressColor(rl.fiveHourPercent) : .gray
+                    color: rl.isLoaded ? progressColor(rl.fiveHourPercent) : .gray,
+                    tickCount: 5
                 )
                 Text(rl.isLoaded ? "\(Int(rl.fiveHourPercent))%" : L.noData)
                     .font(.system(size: 10 * s, weight: .medium, design: .monospaced))
@@ -227,7 +228,8 @@ struct StatusMenuView: View {
                     .frame(width: 20 * s, alignment: .trailing)
                 ProgressBarView(
                     value: rl.isLoaded ? rl.weeklyPercent / 100 : 0,
-                    color: rl.isLoaded ? progressColor(rl.weeklyPercent) : .gray
+                    color: rl.isLoaded ? progressColor(rl.weeklyPercent) : .gray,
+                    tickCount: 7
                 )
                 Text(rl.isLoaded ? "\(Int(rl.weeklyPercent))%" : L.noData)
                     .font(.system(size: 10 * s, weight: .medium, design: .monospaced))
@@ -563,6 +565,7 @@ struct ProgressBarView: View {
     let value: Double
     var color: Color = .blue
     var height: CGFloat = 6
+    var tickCount: Int = 0
 
     var body: some View {
         GeometryReader { geo in
@@ -572,6 +575,15 @@ struct ProgressBarView: View {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(color)
                     .frame(width: max(0, geo.size.width * min(value, 1.0)))
+
+                if tickCount > 1 {
+                    ForEach(1..<tickCount, id: \.self) { i in
+                        Rectangle()
+                            .fill(Color.primary.opacity(0.15))
+                            .frame(width: 1, height: height)
+                            .offset(x: geo.size.width * CGFloat(i) / CGFloat(tickCount))
+                    }
+                }
             }
         }
         .frame(height: height)
