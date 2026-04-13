@@ -18,6 +18,7 @@ final class SessionMonitor {
     @ObservationIgnored private var fileWatcher: DispatchSourceFileSystemObject?
     private var fileDescriptor: Int32 = -1
     private var currentInterval: TimeInterval = 5.0
+    @ObservationIgnored private var debounceWorkItem: DispatchWorkItem?
 
     var aggregateState: SessionState {
         sessions.map(\.state).max(by: { $0.priority < $1.priority }) ?? .idle
@@ -41,8 +42,8 @@ final class SessionMonitor {
             }
         }
 
-        // 토큰/리밋 데이터는 세션 주기의 6배 (최소 30초)
-        let heavyInterval = max(30.0, interval * 6)
+        // 토큰/리밋 데이터는 세션 주기의 6배 (최소 300초 = 5분, CPU 최적화)
+        let heavyInterval = max(300.0, interval * 6)
         heavyTimer = Timer.scheduledTimer(withTimeInterval: heavyInterval, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 await self?.refreshAsync()
@@ -64,11 +65,18 @@ final class SessionMonitor {
         lastRefresh = Date()
     }
 
-    /// 동기 전체 갱신 (초기 로드)
+    /// 초기 로드 — 세션만 동기, 통계는 백그라운드 (CPU 최적화)
     func refreshSync() {
         sessions = discovery.discoverSessions()
-        usageStats = discovery.loadUsageStats()
         lastRefresh = Date()
+        // 무거운 통계(JSONL 전체 파싱)는 백그라운드
+        let disc = discovery
+        Task.detached {
+            let usage = disc.loadUsageStats()
+            await MainActor.run { [weak self] in
+                self?.usageStats = usage
+            }
+        }
     }
 
     /// 비동기 전체 갱신 (팝오버 열 때, 무거운 데이터 백그라운드 로드)
@@ -107,9 +115,15 @@ final class SessionMonitor {
         )
 
         source.setEventHandler { [weak self] in
-            Task { @MainActor in
-                self?.refreshSessionsOnly()
+            // Debounce: 1초 내 연속 이벤트 무시 (CPU 최적화)
+            self?.debounceWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                Task { @MainActor in
+                    self?.refreshSessionsOnly()
+                }
             }
+            self?.debounceWorkItem = workItem
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 1.0, execute: workItem)
         }
 
         source.setCancelHandler { [weak self] in

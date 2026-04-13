@@ -1,5 +1,6 @@
 import Foundation
 import CommonCrypto
+import Darwin
 
 struct SessionDiscovery {
     private let claudeDir: URL
@@ -7,6 +8,11 @@ struct SessionDiscovery {
     private let projectsDir: URL
     private let desktopAgentSessionsDir: URL
     private let fm = FileManager.default
+
+    // All-time stats 캐시 (파일 mtime 기반 증분 처리)
+    private static var cachedAllTimeTokens: Int = 0
+    private static var cachedAllTimeCost: Double = 0.0
+    private static var cachedFileMtimes: [String: Date] = [:]  // path → last modified
 
     init() {
         let home = fm.homeDirectoryForCurrentUser
@@ -121,17 +127,29 @@ struct SessionDiscovery {
     // MARK: - All Time Stats (마일스톤용)
 
     private func loadAllTimeStats(_ stats: inout UsageStats) {
-        var totalTokens = 0
-        var totalCost = 0.0
-        var seenRequests = Set<String>()
+        // 증분 캐싱: 변경된 파일만 재파싱 (595MB 전체 파싱 방지)
+        var deltaTokens = 0
+        var deltaCost = 0.0
 
         for dir in allProjectSubDirs() {
             guard let files = try? fm.contentsOfDirectory(
-                at: dir, includingPropertiesForKeys: nil
+                at: dir, includingPropertiesForKeys: [.contentModificationDateKey]
             ) else { continue }
 
             for file in files where file.pathExtension == "jsonl" {
+                let path = file.path
+                let mtime = (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+
+                // mtime이 캐시와 같으면 스킵
+                if let cached = SessionDiscovery.cachedFileMtimes[path],
+                   let current = mtime, cached == current {
+                    continue
+                }
+
+                // 변경된 파일만 파싱
                 guard let content = try? String(contentsOf: file, encoding: .utf8) else { continue }
+                var fileTokens = 0
+                var fileCost = 0.0
 
                 for line in content.components(separatedBy: .newlines) {
                     guard !line.isEmpty,
@@ -142,27 +160,28 @@ struct SessionDiscovery {
                           let usage = message["usage"] as? [String: Any]
                     else { continue }
 
-                    if let reqId = obj["requestId"] as? String {
-                        if seenRequests.contains(reqId) { continue }
-                        seenRequests.insert(reqId)
-                    }
-
                     let input = usage["input_tokens"] as? Int ?? 0
                     let output = usage["output_tokens"] as? Int ?? 0
                     let cacheCreate = usage["cache_creation_input_tokens"] as? Int ?? 0
                     let cacheRead = usage["cache_read_input_tokens"] as? Int ?? 0
 
-                    totalTokens += input + output + cacheCreate + cacheRead
-                    totalCost += (Double(input) * 15.0
+                    fileTokens += input + output + cacheCreate + cacheRead
+                    fileCost += (Double(input) * 15.0
                         + Double(output) * 75.0
                         + Double(cacheCreate) * 18.75
                         + Double(cacheRead) * 1.50) / 1_000_000.0
                 }
+
+                deltaTokens += fileTokens
+                deltaCost += fileCost
+                SessionDiscovery.cachedFileMtimes[path] = mtime
             }
         }
 
-        stats.allTimeTokens = totalTokens
-        stats.allTimeCostUSD = totalCost
+        SessionDiscovery.cachedAllTimeTokens += deltaTokens
+        SessionDiscovery.cachedAllTimeCost += deltaCost
+        stats.allTimeTokens = SessionDiscovery.cachedAllTimeTokens
+        stats.allTimeCostUSD = SessionDiscovery.cachedAllTimeCost
     }
 
     // MARK: - Codex Usage
@@ -952,8 +971,8 @@ struct SessionDiscovery {
     // MARK: - Private: State Resolution
 
     private func resolveState(cwd: String, pid: Int32) -> SessionState {
-        let cpu = getProcessCPU(pid)
-        if cpu > 5.0 { return .active }
+        // CPU 측정 제거 — proc_pidinfo/ps 호출이 CPU를 잡아먹는 원인
+        // 파일 mtime 기반으로만 상태 판단
 
         let projectHash = cwdToProjectHash(cwd)
         let projectDir = projectsDir.appendingPathComponent(projectHash)
@@ -977,22 +996,15 @@ struct SessionDiscovery {
     }
 
     private func getProcessCPU(_ pid: Int32) -> Double {
-        let pipe = Pipe()
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/ps")
-        process.arguments = ["-p", "\(pid)", "-o", "%cpu="]
-        process.standardOutput = pipe
-        process.standardError = FileHandle.nullDevice
-
-        do {
-            try process.run()
-            process.waitUntilExit()
-        } catch { return 0 }
-
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        guard let str = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-              let cpu = Double(str) else { return 0 }
-        return cpu
+        // proc_pidinfo로 CPU 측정 — ps 프로세스 spawn 없이 (CPU 최적화)
+        var taskInfo = proc_taskinfo()
+        let size = MemoryLayout<proc_taskinfo>.size
+        let result = proc_pidinfo(pid, PROC_PIDTASKINFO, 0, &taskInfo, Int32(size))
+        guard result == Int32(size) else { return 0 }
+        // total CPU time (user + system) in nanoseconds → 대략적 활성도 판단
+        let totalTime = Double(taskInfo.pti_total_user + taskInfo.pti_total_system) / 1_000_000_000.0
+        // 단순 활성 여부만 판단 (정확한 %가 아닌 근사치)
+        return totalTime > 0 ? min(totalTime * 0.1, 100.0) : 0
     }
 
     private func cwdToProjectHash(_ cwd: String) -> String {

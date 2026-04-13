@@ -71,8 +71,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 세션 모니터 시작 (설정된 갱신 주기)
         monitor.start(interval: settings.refreshInterval.rawValue)
 
-        // 메뉴바 아이콘 + 텍스트 업데이트 타이머 (1초)
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        // 메뉴바 아이콘 + 텍스트 업데이트 타이머 (5초 — CPU 최적화)
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.updateMenuBarIcon()
             }
@@ -510,7 +510,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard animationTimer == nil else { return }
         currentAnimationFrame = 0
         animationDirection = 1
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.35, repeats: true) { [weak self] _ in
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.75, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 guard let self, let button = self.statusItem.button else { return }
                 self.currentAnimationFrame += self.animationDirection
@@ -560,7 +560,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 // MARK: - UNUserNotificationCenterDelegate
 
 @MainActor
-extension AppDelegate: UNUserNotificationCenterDelegate {
+extension AppDelegate: @preconcurrency UNUserNotificationCenterDelegate {
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,

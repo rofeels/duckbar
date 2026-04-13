@@ -178,7 +178,11 @@ struct HeatmapView: View {
         let today = cal.startOfDay(for: Date())
         return (0..<7).reversed().map { cal.date(byAdding: .day, value: -$0, to: today)! }
     }
-    private var gridHeight: CGFloat { CGFloat(7 * 14 + 6 * 2 + 14 + 20) * fontScale }
+    private var gridHeight: CGFloat {
+        // 7*14=98, 6*2=12, +14+20=34 → total 144
+        let base: CGFloat = 144.0
+        return base * fontScale
+    }
 
     var body: some View {
         HeatmapSizedGrid(
