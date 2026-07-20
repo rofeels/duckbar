@@ -7,7 +7,7 @@ cask "duckbar" do
   desc "macOS menu bar app for monitoring Claude Code sessions"
   homepage "https://github.com/rofeels/duckbar"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "DuckBar.app"
 
