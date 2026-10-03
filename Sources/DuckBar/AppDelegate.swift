@@ -21,6 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var animationDirection: Int = 1
     private var hotKey: HotKey?
     private struct ImageCacheKey: Hashable {
+        let style: MenuBarIconStyle
         let frame: Int
         let template: Bool
         let colorName: String?
@@ -39,7 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 메뉴바 아이템 설정
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = cachedDuckFeetImage(frame: 0, color: nil, template: true)
+            button.image = cachedIconImage(frame: 0, color: nil, template: true)
             button.imagePosition = .imageLeading
             button.action = #selector(statusItemClicked)
             button.target = self
@@ -108,6 +109,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self,
             selector: #selector(stopRecordingHotkey),
             name: .stopRecordingHotkey,
+            object: nil
+        )
+
+        // 메뉴바 아이콘 모양 변경
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(menuBarIconStyleChanged),
+            name: .menuBarIconStyleChanged,
             object: nil
         )
 
@@ -183,6 +192,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         setupHotkey()
         NotificationCenter.default.post(name: .hotkeyRecorded, object: nil)
+    }
+
+    @objc private func menuBarIconStyleChanged() {
+        lastRenderedState = nil // 강제 아이콘 재렌더
+        updateMenuBarIcon()
     }
 
     @objc private func appearanceChanged() {
@@ -357,10 +371,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         if let color = tintColor {
-            button.image = cachedDuckFeetImage(frame: currentAnimationFrame, color: color, template: false)
+            button.image = cachedIconImage(frame: currentAnimationFrame, color: color, template: false)
             button.contentTintColor = color
         } else {
-            button.image = cachedDuckFeetImage(frame: 0, color: nil, template: true)
+            button.image = cachedIconImage(frame: 0, color: nil, template: true)
             button.contentTintColor = nil
         }
 
@@ -452,22 +466,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
-    // MARK: - 오리발 픽셀아트
-
-    /// 오리발 한 쌍의 픽셀아트 shape (7 wide, 6 tall)
-    /// 좌표: (dx, dy), 원점은 좌상단
-    private static let footShape: [(Int, Int)] = [
-        // 다리
-        (3, 0), (3, 1),
-        // 발목
-        (2, 2), (3, 2), (4, 2),
-        // 발등
-        (1, 3), (2, 3), (3, 3), (4, 3), (5, 3),
-        // 물갈퀴
-        (0, 4), (1, 4), (2, 4), (3, 4), (4, 4), (5, 4), (6, 4),
-        // 발가락 (3개)
-        (0, 5), (3, 5), (6, 5),
-    ]
+    // MARK: - 메뉴바 아이콘
 
     private static func colorName(for color: NSColor?) -> String? {
         guard let color else { return nil }
@@ -477,40 +476,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return "other"
     }
 
-    private func cachedDuckFeetImage(frame: Int, color: NSColor?, template: Bool) -> NSImage {
-        let key = ImageCacheKey(frame: frame, template: template, colorName: Self.colorName(for: color))
+    private func cachedIconImage(frame: Int, color: NSColor?, template: Bool) -> NSImage {
+        let style = settings.menuBarIconStyle
+        let key = ImageCacheKey(style: style, frame: frame, template: template, colorName: Self.colorName(for: color))
         if let cached = imageCache[key] { return cached }
-        let image = makeDuckFeetImage(frame: frame, color: color, template: template)
+        let image = style.makeImage(frame: frame, color: color, template: template)
         imageCache[key] = image
-        return image
-    }
-
-    /// 오리발 픽셀아트 메뉴바 이미지 생성
-    private func makeDuckFeetImage(frame: Int, color: NSColor?, template: Bool) -> NSImage {
-        let size = NSSize(width: 18, height: 18)
-        let fillColor = template ? NSColor.black : (color ?? .black)
-
-        // 프레임별 Y 오프셋 (뒤뚱뒤뚱 워킹 모션)
-        let leftY: Int
-        let rightY: Int
-        switch frame {
-        case 1:  leftY = 5; rightY = 7
-        case 2:  leftY = 7; rightY = 5
-        default: leftY = 6; rightY = 6
-        }
-
-        let image = NSImage(size: size, flipped: true) { _ in
-            fillColor.setFill()
-            for (dx, dy) in Self.footShape {
-                // 왼발 (x 시작 = 0)
-                NSRect(x: CGFloat(dx), y: CGFloat(leftY + dy), width: 1, height: 1).fill()
-                // 오른발 (x 시작 = 11)
-                NSRect(x: CGFloat(11 + dx), y: CGFloat(rightY + dy), width: 1, height: 1).fill()
-            }
-            return true
-        }
-
-        image.isTemplate = template
         return image
     }
 
@@ -526,7 +497,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.currentAnimationFrame += self.animationDirection
                 if self.currentAnimationFrame >= 2 { self.animationDirection = -1 }
                 if self.currentAnimationFrame <= 0 { self.animationDirection = 1 }
-                button.image = self.cachedDuckFeetImage(
+                button.image = self.cachedIconImage(
                     frame: self.currentAnimationFrame,
                     color: .systemGreen,
                     template: false

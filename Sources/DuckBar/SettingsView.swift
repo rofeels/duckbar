@@ -192,6 +192,31 @@ struct SettingsView: View {
 
                     Divider()
 
+                    // 메뉴바 아이콘
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label {
+                            Text(L.menuBarIcon)
+                                .font(.system(size: 11, weight: .semibold))
+                        } icon: {
+                            Image(systemName: "menubar.rectangle")
+                                .font(.system(size: 10))
+                        }
+                        .foregroundStyle(.secondary)
+
+                        HStack(spacing: 6) {
+                            ForEach(MenuBarIconStyle.allCases, id: \.rawValue) { style in
+                                SegmentButton(isSelected: settings.menuBarIconStyle == style,
+                                              title: style.displayName, fontSize: 12, padding: 6) {
+                                    settings.menuBarIconStyle = style
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+
+                    Divider()
+
                     // Launch at Login
                     HStack {
                         Label {

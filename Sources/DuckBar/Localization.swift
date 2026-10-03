@@ -135,6 +135,10 @@ enum L {
     static var interval1m: String { lang == .korean ? "1분" : "1m" }
     static var interval3m: String { lang == .korean ? "3분" : "3m" }
     static var interval5m: String { lang == .korean ? "5분" : "5m" }
+    static var menuBarIcon: String { lang == .korean ? "메뉴바 아이콘" : "Menu Bar Icon" }
+    static var iconDuckFeet: String { lang == .korean ? "오리발" : "Duck Feet" }
+    static var iconDuck: String { lang == .korean ? "오리" : "Duck" }
+    static var iconClaude: String { lang == .korean ? "클로드" : "Claude" }
 }
 
 // MARK: - Notification Names
@@ -149,4 +153,5 @@ extension Notification.Name {
     static let openShareCard = Notification.Name("OpenShareCard")
     static let automaticUpdateCheckChanged = Notification.Name("AutomaticUpdateCheckChanged")
     static let automaticUpdateInstallChanged = Notification.Name("AutomaticUpdateInstallChanged")
+    static let menuBarIconStyleChanged = Notification.Name("MenuBarIconStyleChanged")
 }

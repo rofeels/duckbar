@@ -241,6 +241,13 @@ final class AppSettings {
         didSet { save() }
     }
 
+    var menuBarIconStyle: MenuBarIconStyle {
+        didSet {
+            save()
+            NotificationCenter.default.post(name: .menuBarIconStyleChanged, object: nil)
+        }
+    }
+
     private let defaults = UserDefaults.standard
 
     private init() {
@@ -308,6 +315,7 @@ final class AppSettings {
         alertThreshold2 = defaults.object(forKey: "alertThreshold2") as? Double ?? 80
         alertThreshold3 = defaults.object(forKey: "alertThreshold3") as? Double ?? 90
         showDaysFormat = defaults.object(forKey: "showDaysFormat") as? Bool ?? false
+        menuBarIconStyle = defaults.string(forKey: "menuBarIconStyle").flatMap(MenuBarIconStyle.init(rawValue:)) ?? .duckFeet
     }
 
     private func save() {
@@ -332,5 +340,6 @@ final class AppSettings {
         defaults.set(alertThreshold2, forKey: "alertThreshold2")
         defaults.set(alertThreshold3, forKey: "alertThreshold3")
         defaults.set(showDaysFormat, forKey: "showDaysFormat")
+        defaults.set(menuBarIconStyle.rawValue, forKey: "menuBarIconStyle")
     }
 }
