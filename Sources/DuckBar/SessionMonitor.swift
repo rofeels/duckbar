@@ -19,6 +19,7 @@ final class SessionMonitor {
     private var fileDescriptor: Int32 = -1
     private var currentInterval: TimeInterval = 5.0
     @ObservationIgnored private var debounceWorkItem: DispatchWorkItem?
+    @ObservationIgnored private var usageTask: Task<UsageStats, Never>?
 
     var aggregateState: SessionState {
         sessions.map(\.state).max(by: { $0.priority < $1.priority }) ?? .idle
@@ -70,13 +71,21 @@ final class SessionMonitor {
         sessions = discovery.discoverSessions()
         lastRefresh = Date()
         // 무거운 통계(JSONL 전체 파싱)는 백그라운드
-        let disc = discovery
-        Task.detached { [weak self] in
-            let usage = disc.loadUsageStats()
-            await MainActor.run { [weak self] in
-                self?.usageStats = usage
-            }
+        Task { [weak self] in
+            guard let self else { return }
+            self.usageStats = await self.loadUsageStatsInBackground()
         }
+    }
+
+    /// loadUsageStats는 static 캐시를 수정하므로 동시 실행 시 크래시 — 진행 중인 작업이 있으면 그 결과를 공유
+    private func loadUsageStatsInBackground() async -> UsageStats {
+        if let task = usageTask { return await task.value }
+        let disc = discovery
+        let task = Task.detached { disc.loadUsageStats() }
+        usageTask = task
+        let usage = await task.value
+        usageTask = nil
+        return usage
     }
 
     /// 비동기 전체 갱신 (팝오버 열 때, 무거운 데이터 백그라운드 로드)
@@ -87,12 +96,7 @@ final class SessionMonitor {
         lastRefresh = Date()
 
         // 토큰/리밋은 백그라운드에서
-        let disc = discovery
-        let usage = await Task.detached {
-            disc.loadUsageStats()
-        }.value
-
-        usageStats = usage
+        usageStats = await loadUsageStatsInBackground()
         isLoading = false
         if alertsEnabled {
             UsageAlertManager.shared.check(rateLimits: usageStats.rateLimits, thresholds: alertThresholds)
