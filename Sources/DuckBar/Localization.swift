@@ -139,6 +139,9 @@ enum L {
     static var iconDuckFeet: String { lang == .korean ? "오리발" : "Duck Feet" }
     static var iconDuck: String { lang == .korean ? "오리" : "Duck" }
     static var iconClaude: String { lang == .korean ? "클로드" : "Claude" }
+    static var iconRubberDuck: String { lang == .korean ? "고무오리" : "Rubber Duck" }
+    static var iconTerminal: String { lang == .korean ? "터미널" : "Terminal" }
+    static var iconSlime: String { lang == .korean ? "슬라임" : "Slime" }
 }
 
 // MARK: - Notification Names

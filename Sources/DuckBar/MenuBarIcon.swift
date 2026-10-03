@@ -6,12 +6,18 @@ enum MenuBarIconStyle: String, CaseIterable, Codable {
     case duckFeet
     case duck
     case claude
+    case rubberDuck
+    case terminal
+    case slime
 
     var displayName: String {
         switch self {
         case .duckFeet: L.iconDuckFeet
         case .duck: L.iconDuck
         case .claude: L.iconClaude
+        case .rubberDuck: L.iconRubberDuck
+        case .terminal: L.iconTerminal
+        case .slime: L.iconSlime
         }
     }
 
@@ -33,6 +39,25 @@ enum MenuBarIconStyle: String, CaseIterable, Codable {
                 lifted.contains(i) ? [(x, 11)] : [(x, 11), (x, 12)]
             }
             return Self.points(Self.claudeArt, x: 1, y: 4) + legs
+        case .rubberDuck:
+            // 기우뚱: 머리만 앞뒤로 까딱
+            let tilt = frame == 1 ? -1 : frame == 2 ? 1 : 0
+            return Self.rubberDuckArt.enumerated().flatMap { dy, row in
+                let shift = dy < 5 ? tilt : 0
+                return Self.points([row], x: 2 + shift, y: 3 + dy)
+            }
+        case .terminal:
+            // 깜빡이는 커서: 0 = 커서 켬, 1 = 꺼짐, 2 = 한 글자 입력 후 커서
+            let cursorX = frame == 2 ? 9 : 7
+            var pixels = Self.points(Self.terminalArt, x: 1, y: 3)
+            if frame == 2 { pixels += [(7, 9), (7, 10)] }
+            if frame != 1 { pixels += (cursorX..<cursorX + 3).map { ($0, 10) } }
+            return pixels
+        case .slime:
+            // 말랑말랑: 납작해졌다 길쭉해짐 (바닥 고정)
+            let art = frame == 1 ? Self.slimeSquashArt : frame == 2 ? Self.slimeStretchArt : Self.slimeArt
+            let width = art[0].count
+            return Self.points(art, x: (18 - width) / 2, y: 16 - art.count)
         }
     }
 
@@ -91,5 +116,65 @@ enum MenuBarIconStyle: String, CaseIterable, Codable {
         "################",
         "  ############  ",
         "  ############  ",
+    ]
+
+    private static let rubberDuckArt = [
+        "      ####    ",
+        "     ######   ",
+        "     #### ##  ",
+        "     ######## ",
+        "     ######   ",
+        "##  ########  ",
+        "############# ",
+        "###    ###### ",
+        "############# ",
+        " ###########  ",
+        "  #########   ",
+    ]
+
+    private static let terminalArt = [
+        "################",
+        "################",
+        "#              #",
+        "# #            #",
+        "#  #           #",
+        "#   #          #",
+        "#  #           #",
+        "# #            #",
+        "#              #",
+        "################",
+    ]
+
+    private static let slimeArt = [
+        "    ####    ",
+        "  ########  ",
+        " ########## ",
+        " ##  ##  ## ",
+        "############",
+        "############",
+        "############",
+        " ########## ",
+    ]
+
+    private static let slimeSquashArt = [
+        "    ######    ",
+        "  ##########  ",
+        " ###  ##  ### ",
+        "##############",
+        "##############",
+        " ############ ",
+    ]
+
+    private static let slimeStretchArt = [
+        "   ####   ",
+        "  ######  ",
+        " ######## ",
+        " ######## ",
+        " #  ##  # ",
+        "##########",
+        "##########",
+        "##########",
+        "##########",
+        " ######## ",
     ]
 }

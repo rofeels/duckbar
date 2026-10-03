@@ -27,6 +27,34 @@ struct SegmentButton: View {
     }
 }
 
+struct IconStyleButton: View {
+    let style: MenuBarIconStyle
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: onSelect) {
+            VStack(spacing: 4) {
+                Image(nsImage: style.makeImage(frame: 0, color: nil, template: true))
+                    .renderingMode(.template)
+                    .interpolation(.none)
+                    .resizable()
+                    .frame(width: 36, height: 36)
+                Text(style.displayName)
+                    .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
+            }
+            .foregroundStyle(isSelected ? .white : .primary)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isSelected ? Color.accentColor : Color.primary.opacity(0.06))
+            )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 struct AlertThresholdField: View {
     @Binding var value: Double
     @State private var text: String = ""
@@ -203,10 +231,9 @@ struct SettingsView: View {
                         }
                         .foregroundStyle(.secondary)
 
-                        HStack(spacing: 6) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
                             ForEach(MenuBarIconStyle.allCases, id: \.rawValue) { style in
-                                SegmentButton(isSelected: settings.menuBarIconStyle == style,
-                                              title: style.displayName, fontSize: 12, padding: 6) {
+                                IconStyleButton(style: style, isSelected: settings.menuBarIconStyle == style) {
                                     settings.menuBarIconStyle = style
                                 }
                             }
